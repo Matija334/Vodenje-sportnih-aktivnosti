@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
+    "test:ci": "jest --coverage --watchAll=false",
     "start": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "production": "npm run build && node build/index.js"

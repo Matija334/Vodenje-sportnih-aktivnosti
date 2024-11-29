@@ -8,7 +8,6 @@ interface EventDetailsProps {
 }
 
 const EventDetails: React.FC<EventDetailsProps> = ({ event }: EventDetailsProps) => {
-    const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
 
     const shareEvent = () => {
@@ -37,18 +36,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event }: EventDetailsProps)
             <div className="form-group">
                 <label htmlFor="location">Lokacija:</label>
                 <div className="form-control-plaintext">{event.location}</div>
-                <div className="mt-2">
-                    <iframe
-                        title="map"
-                        width="100%"
-                        height="200"
-                        style={{ border: 0 }}
-                        src={`https://www.google.com/maps/embed/v1/place?key=${googleMapsApiKey}&q=${encodeURIComponent(
-                            event.location
-                        )}`}
-                        allowFullScreen
-                    ></iframe>
-                </div>
             </div>
             <br />
             <div className="form-group">
