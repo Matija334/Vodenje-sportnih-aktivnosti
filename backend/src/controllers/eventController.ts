@@ -142,4 +142,51 @@ export const eventsController = {
             }
         );
     },
+
+    addComment: (req: Request, res: Response) => {
+        const { eventId, userId, comment } = req.body;
+
+        db.run(
+            `INSERT INTO comments (event_id, user_id, comment) VALUES (?, ?, ?)`,
+            [eventId, userId, comment],
+            function (err) {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                res.status(201).json({ id: this.lastID, message: 'Komentar dodan.' });
+            }
+        );
+    },
+
+    getComments: (req: Request, res: Response) => {
+        const { eventId } = req.params;
+
+        db.all(
+            `SELECT c.id, c.comment, c.timestamp, u.username 
+             FROM comments c 
+             JOIN users u ON c.user_id = u.id 
+             WHERE c.event_id = ?`,
+            [eventId],
+            (err, rows) => {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                res.status(200).json(rows);
+            }
+        );
+    },
+
+    deleteComment: (req: Request, res: Response) => {
+        const { id } = req.params;
+
+        db.run(`DELETE FROM comments WHERE id = ?`, [id], function (err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'Komentar ni najden.' });
+            }
+            res.status(200).json({ message: 'Komentar izbrisan.' });
+        });
+    },
 };

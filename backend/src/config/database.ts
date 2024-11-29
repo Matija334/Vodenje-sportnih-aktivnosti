@@ -90,6 +90,25 @@ const initializeDatabase = () => {
             }
         );
     });
+
+    db.run(
+        `CREATE TABLE IF NOT EXISTS comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        comment TEXT NOT NULL,
+        timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (event_id) REFERENCES events(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+    );`,
+        (err) => {
+            if (err) {
+                console.error('Error creating "comments" table:', err.message);
+            } else {
+                console.log('"comments" table created or already exists.');
+            }
+        }
+    );
 };
 
 export default db;
