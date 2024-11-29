@@ -21,6 +21,11 @@ jobs:
       with:
         node-version: 20
 
+    - name: Clean dependencies
+      run: |
+        cd frontend
+        rm -rf node_modules package-lock.json
+
     - name: Cache node_modules
       uses: actions/cache@v3
       with:
@@ -32,7 +37,12 @@ jobs:
     - name: Install dependencies
       run: |
         cd frontend
-        npm install
+        npm ci
+
+    - name: Verify installation
+      run: |
+        cd frontend
+        npm ls --all
 
     - name: Build application
       run: |
@@ -69,7 +79,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd frontend
-        npm install
+        npm ci
 
     - name: Run tests with coverage
       run: |
