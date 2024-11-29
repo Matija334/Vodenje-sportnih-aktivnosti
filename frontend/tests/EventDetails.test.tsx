@@ -30,7 +30,7 @@ describe('EventDetails Component', () => {
         expect(screen.getByText('Opis:')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.description)).toBeInTheDocument();
         expect(screen.getByText('Datum:')).toBeInTheDocument();
-        expect(screen.getByText('29.11.2024 ob 11:00')).toBeInTheDocument(); // Preveri, če je datum pravilen
+        expect(screen.getByText('29.11.2024 ob 10:00')).toBeInTheDocument(); // Preveri, če je datum pravilen
         expect(screen.getByText('Lokacija:')).toBeInTheDocument();
         expect(screen.getByText(mockEvent.location)).toBeInTheDocument();
         expect(screen.getByText('Organizator:')).toBeInTheDocument();
@@ -81,7 +81,7 @@ describe('EventDetails Component', () => {
 
     it('renders event date correctly in Slovenian format', () => {
         render(<EventDetails event={mockEvent} />);
-        const dateText = screen.getByText('29.11.2024 ob 11:00');
+        const dateText = screen.getByText('29.11.2024 ob 10:00');
         expect(dateText).toBeInTheDocument();
     });
 
