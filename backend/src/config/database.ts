@@ -1,10 +1,17 @@
-"use strict";
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("./database.sqlite", (err) => {
+import sqlite3 from "sqlite3";
+import { Database } from "sqlite3";
+
+// Uporabimo verbose način SQLite
+const sqlite = sqlite3.verbose();
+
+// Inicializiramo bazo podatkov
+const db: Database = new sqlite.Database("./database.sqlite", (err) => {
     if (err) {
         console.error("Error opening database:", err.message);
     } else {
-        // Create the 'events' table
+        console.log("Database connected successfully.");
+
+        // Ustvarimo tabelo 'events'
         db.run(`
             CREATE TABLE IF NOT EXISTS events (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,11 +23,13 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
             );
         `, (err) => {
             if (err) {
-                console.log("Error creating 'events' table:", err.message);
+                console.error("Error creating 'events' table:", err.message);
+            } else {
+                console.log("'events' table created or already exists.");
             }
         });
 
-        // Create the 'users' table
+        // Ustvarimo tabelo 'users'
         db.run(`
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,11 +40,13 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
             );
         `, (err) => {
             if (err) {
-                console.log("Error creating 'users' table:", err.message);
+                console.error("Error creating 'users' table:", err.message);
+            } else {
+                console.log("'users' table created or already exists.");
             }
         });
 
-        // Create the 'Registrations' table
+        // Ustvarimo tabelo 'Registrations'
         db.run(`
             CREATE TABLE IF NOT EXISTS Registrations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,11 +57,13 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
             );
         `, (err) => {
             if (err) {
-                console.log("Error creating 'Registrations' table:", err.message);
+                console.error("Error creating 'Registrations' table:", err.message);
+            } else {
+                console.log("'Registrations' table created or already exists.");
             }
         });
 
-        // Create the 'notifications' table
+        // Ustvarimo tabelo 'notifications'
         db.run(`
             CREATE TABLE IF NOT EXISTS notifications (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,14 +73,13 @@ const db = new sqlite3.Database("./database.sqlite", (err) => {
             );
         `, (err) => {
             if (err) {
-                console.log("Error creating 'notifications' table:", err.message);
+                console.error("Error creating 'notifications' table:", err.message);
             } else {
                 console.log("'notifications' table created or already exists.");
             }
         });
-
-
     }
 });
 
-module.exports = db;
+// Izvoz baze podatkov
+export default db;
