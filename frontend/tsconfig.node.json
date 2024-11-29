@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
-    "composite": true,
+    "composite": true,    // Omogoči kompozitne projekte (zahtevano za uporabo v večjih projektih)
+    "declaration": true,  // Omogoči generiranje .d.ts datotek
+    "emitDeclarationOnly": true, // Samo generiranje deklaracij, brez JS datotek (če je to potrebno)
+    "outDir": "./dist",   // Pot do izhodne mape
     "target": "ES2022",
     "lib": ["ES2023"],
     "module": "ESNext",
