@@ -54,6 +54,7 @@ const UpdateEvent = ({ onClose, onUpdateEvent, eventToEdit }: UpdateEventProps) 
             <div className="form-group">
                 <label htmlFor="name">Ime dogodka</label>
                 <input
+                    id="name"
                     type="text"
                     name="name"
                     value={event.name}
@@ -66,6 +67,7 @@ const UpdateEvent = ({ onClose, onUpdateEvent, eventToEdit }: UpdateEventProps) 
             <div className="form-group">
                 <label htmlFor="description">Opis</label>
                 <textarea
+                    id="description"
                     name="description"
                     value={event.description}
                     onChange={handleChange}
@@ -78,6 +80,7 @@ const UpdateEvent = ({ onClose, onUpdateEvent, eventToEdit }: UpdateEventProps) 
             <div className="form-group">
                 <label htmlFor="date">Datum</label>
                 <input
+                    id="date"
                     type="datetime-local"
                     name="date"
                     value={eventDateToHtmlInput(event.date)}
@@ -90,6 +93,7 @@ const UpdateEvent = ({ onClose, onUpdateEvent, eventToEdit }: UpdateEventProps) 
             <div className="form-group">
                 <label htmlFor="location">Lokacija</label>
                 <input
+                    id="location"
                     type="text"
                     name="location"
                     value={event.location}
