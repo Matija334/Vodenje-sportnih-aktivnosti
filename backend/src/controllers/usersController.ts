@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import db from "../database";
+import db from "../config/database";
 
 export const usersController = {
     add: (req: Request, res: Response) => {
