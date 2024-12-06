@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "target": "ES2020",
