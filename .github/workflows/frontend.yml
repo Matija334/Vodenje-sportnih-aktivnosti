@@ -21,11 +21,6 @@ jobs:
       with:
         node-version: 20
 
-    - name: Clean dependencies
-      run: |
-        cd frontend
-        rm -rf node_modules package-lock.json
-
     - name: Cache node_modules
       uses: actions/cache@v3
       with:
@@ -67,11 +62,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 20
-    
-    - name: Clean dependencies
-      run: |
-        cd frontend
-        rm -rf node_modules package-lock.json
 
     - name: Cache node_modules
       uses: actions/cache@v3
