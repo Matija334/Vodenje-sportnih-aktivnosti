@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { addEvent, NewEvent } from "../services/api.tsx";
-import { signedInUserAtom } from "../atoms/signedInUserAtom.ts";
+import { addEvent, NewEvent } from "../services/api";
+import { signedInUserAtom } from "../atoms/signedInUserAtom";
 import { useAtom } from "jotai";
-import { UserRole } from "../services/usersApi.ts";
+import { UserRole } from "../services/usersApi";
 
 interface AddEventProps {
     onClose: () => void;
