@@ -121,3 +121,27 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}
 
+  deploy-to-firebase:
+    needs: test-frontend
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Download build artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: frontend-build
+        path: frontend/dist/
+
+    - name: Setup Firebase CLI
+      run: |
+        cd frontend
+        npm install -g firebase-tools
+
+    - name: Deploy to Firebase Hosting
+      run: |
+        cd frontend
+        firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
+
