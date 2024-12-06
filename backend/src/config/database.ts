@@ -109,6 +109,25 @@ const initializeDatabase = () => {
             }
         }
     );
+
+    db.run(
+        `CREATE TABLE IF NOT EXISTS event_ratings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        event_id INTEGER NOT NULL,
+        user_id INTEGER NOT NULL,
+        rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+        FOREIGN KEY(event_id) REFERENCES events(id),
+        FOREIGN KEY(user_id) REFERENCES users(id),
+        UNIQUE(event_id, user_id)
+    );`,
+        (err) => {
+            if (err) {
+                console.error('Error creating "event_ratings" table:', err.message);
+            } else {
+                console.log('"event_ratings" table created or already exists.');
+            }
+        }
+    );
 };
 
 export default db;

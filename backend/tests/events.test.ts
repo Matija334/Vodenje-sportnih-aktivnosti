@@ -35,6 +35,17 @@ describe('Events API', () => {
                 FOREIGN KEY(user_id) REFERENCES users(id)
             );`
             );
+            db.run(
+                `CREATE TABLE IF NOT EXISTS event_ratings (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    event_id INTEGER NOT NULL,
+                    user_id INTEGER NOT NULL,
+                    rating INTEGER NOT NULL CHECK(rating BETWEEN 1 AND 5),
+                    FOREIGN KEY(event_id) REFERENCES events(id),
+                    FOREIGN KEY(user_id) REFERENCES users(id),
+                    UNIQUE(event_id, user_id)
+                );`
+            );
             done();
         });
     });
@@ -47,6 +58,8 @@ describe('Events API', () => {
             db.run('DELETE FROM sqlite_sequence WHERE name="comments"');
             db.run('DELETE FROM users');
             db.run('DELETE FROM sqlite_sequence WHERE name="users"');
+            db.run('DELETE FROM event_ratings');
+            db.run('DELETE FROM sqlite_sequence WHERE name="event_ratings"');
             db.run(
                 `INSERT INTO events (name, description, date, location, organizer)
          VALUES ('Test Event', 'Description', '2024-12-01T12:00:00Z', 'Online', 'Test Organizer')`,
@@ -197,4 +210,64 @@ describe('Events API', () => {
         expect(response.statusCode).toBe(500);
         expect(response.body).toHaveProperty('error');
     });
+
+    it('POST /api/events/rate - should add a new rating', async () => {
+        const rating = { eventId: 1, userId: 1, rating: 5 };
+
+        const response = await request(app).post('/api/events/rate').send(rating);
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe('Ocena uspešno shranjena.');
+
+        const ratingResponse = await request(app).get('/api/events/rating/1');
+        expect(ratingResponse.statusCode).toBe(200);
+        expect(ratingResponse.body.averageRating).toBe(5);
+    });
+
+    it('POST /api/events/rate - should update an existing rating', async () => {
+        const initialRating = { eventId: 1, userId: 1, rating: 4 };
+        const updatedRating = { eventId: 1, userId: 1, rating: 3 };
+
+        await request(app).post('/api/events/rate').send(initialRating);
+        const response = await request(app).post('/api/events/rate').send(updatedRating);
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe('Ocena uspešno shranjena.');
+
+        const ratingResponse = await request(app).get('/api/events/rating/1');
+        expect(ratingResponse.body.averageRating).toBe(3);
+    });
+
+    it('GET /api/events/rating/:eventId - should retrieve average rating with multiple ratings', async () => {
+        const rating1 = { eventId: 1, userId: 1, rating: 5 };
+
+        const newUser = {
+            username: 'newUser',
+            password: 'password123',
+            fullName: 'New User',
+            role: 'user',
+        };
+        await request(app).post('/api/users').send(newUser);
+        const rating2 = { eventId: 1, userId: 2, rating: 3 };
+
+        await request(app).post('/api/events/rate').send(rating1);
+        await request(app).post('/api/events/rate').send(rating2);
+
+        const response = await request(app).get('/api/events/rating/1');
+        expect(response.statusCode).toBe(200);
+        expect(response.body.averageRating).toBe(4);
+    });
+
+    it('GET /api/events/rating/:eventId - should return 404 if event does not exist', async () => {
+        const response = await request(app).get('/api/events/rating/999');
+        expect(response.statusCode).toBe(404);
+        expect(response.body.error).toBe('Dogodek ni najden.');
+    });
+
+    it('POST /api/events/rate - should return 400 for invalid rating value', async () => {
+        const invalidRating = { eventId: 1, userId: 1, rating: 6 };
+
+        const response = await request(app).post('/api/events/rate').send(invalidRating);
+        expect(response.statusCode).toBe(400);
+        expect(response.body.error).toBe('Ocena mora biti med 1 in 5.');
+    });
+
 });

@@ -16,6 +16,9 @@ router.post('/comment', eventsController.addComment);
 router.get('/comments/:eventId', eventsController.getComments);
 router.delete('/comments/:id', eventsController.deleteComment);
 
+router.post('/rate', eventsController.rateEvent);
+router.get('/rating/:eventId', eventsController.getEventRating);
+
 
 export {router as eventRoutes};
 

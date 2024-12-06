@@ -189,4 +189,63 @@ export const eventsController = {
             res.status(200).json({ message: 'Komentar izbrisan.' });
         });
     },
+
+    rateEvent: (req: Request, res: Response): void => {
+        const { eventId, userId, rating } = req.body;
+
+        if (rating < 1 || rating > 5) {
+            res.status(400).json({ error: "Ocena mora biti med 1 in 5." });
+            return;
+        }
+
+        db.run(
+            `INSERT INTO event_ratings (event_id, user_id, rating)
+             VALUES (?, ?, ?)
+                 ON CONFLICT(event_id, user_id) 
+         DO UPDATE SET rating = ?`,
+            [eventId, userId, rating, rating],
+            function (err) {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+                res.status(200).json({ message: "Ocena uspešno shranjena." });
+            }
+        );
+    },
+
+    getEventRating: (req: Request, res: Response): void => {
+        const { eventId } = req.params;
+
+        db.get(
+            `SELECT id FROM events WHERE id = ?`,
+            [eventId],
+            (err, eventRow) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+
+                if (!eventRow) {
+                    res.status(404).json({ error: "Dogodek ni najden." });
+                    return;
+                }
+
+                db.get(
+                    `SELECT AVG(rating) as averageRating
+                 FROM event_ratings
+                 WHERE event_id = ?`,
+                    [eventId],
+                    (err, row: { averageRating: number } | undefined) => {
+                        if (err) {
+                            res.status(500).json({ error: err.message });
+                            return;
+                        }
+                        res.json({ averageRating: row?.averageRating || 0 });
+                    }
+                );
+            }
+        );
+    },
+
 };
