@@ -114,4 +114,11 @@ jobs:
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
         docker push ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
+  deploy-to-render:
+    needs: dockerize-and-push
+    runs-on: ubuntu-latest
 
+    steps:
+    - name: Trigger deploy on Render
+      run: |
+        curl -X POST -d '{}' ${{ secrets.RENDER_DEPLOY_HOOK }}
