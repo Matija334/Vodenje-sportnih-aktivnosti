@@ -9,6 +9,7 @@ const config: Config = {
         '^.+\\.tsx?$': 'ts-jest', // Pove jestu, da uporablja ts-jest za TypeScript datoteke
     },
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+    coverageReporters: ['lcov', 'text-summary'],
 };
 
 export default config;
