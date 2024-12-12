@@ -141,7 +141,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd frontend
-        npm ci
+        npm install
     - name: Collect coverage (React-specific)
       run: |
         cd frontend
