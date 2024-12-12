@@ -6,9 +6,11 @@ on:
   push:
     branches:
       - main
+      - production
   pull_request:
     branches:
       - main
+      - production
 
 jobs:
   # Job za gradnjo backenda
@@ -90,10 +92,12 @@ jobs:
       with:
         name: backend-coverage  # Ime artefakta
         path: backend/coverage/  # Pot do poročila o pokritosti kode
-
-  dockerize-and-push:
+        
+  dockerize-and-push-dev:
     needs: test-backend
     runs-on: ubuntu-latest
+    environment: Development
+    if: github.ref == 'refs/heads/main' 
 
     steps:
     - name: Checkout code
@@ -107,15 +111,45 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
-        docker tag ${{ secrets.DOCKER_USERNAME }}/backend:latest ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:dev ./backend
+        docker tag ${{ secrets.DOCKER_USERNAME }}/backend:dev ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
 
     - name: Push Docker image to Docker Hub
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:dev
         docker push ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
+
+  dockerize-and-push-prod:
+    needs: [test-backend]
+    runs-on: ubuntu-latest
+
+    if: github.ref == 'refs/heads/production' 
+
+    environment:
+      name: Production
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:prod ./backend
+        docker tag ${{ secrets.DOCKER_USERNAME }}/backend:prod ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:prod
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
+
   deploy-to-render:
-    needs: dockerize-and-push
+    needs: dockerize-and-push-dev
     runs-on: ubuntu-latest
 
     steps:
