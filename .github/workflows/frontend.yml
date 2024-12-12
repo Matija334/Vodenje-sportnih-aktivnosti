@@ -166,7 +166,7 @@ jobs:
           -Dsonar.javascript.lcov.reportPaths=./lcov.info \
           
   dockerize-and-push-prod:
-    needs: [test-frontend]
+    needs: [test-frontend, sonarcloud-analysis]
     runs-on: ubuntu-latest
 
     if: github.ref == 'refs/heads/production' 
