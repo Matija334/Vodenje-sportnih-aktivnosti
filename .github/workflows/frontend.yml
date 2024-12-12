@@ -119,9 +119,7 @@ jobs:
     needs: test-frontend  
     runs-on: ubuntu-latest
     environment:
-
-      name: Production      
-    if: github.ref == 'refs/heads/production' 
+      name: Development      
 
     steps:
     - name: Checkout code
